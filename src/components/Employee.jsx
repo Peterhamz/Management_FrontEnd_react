@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { createEmployee } from '../services/EmployeeServices'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 
 const Employee = () => {
@@ -18,11 +18,13 @@ const [error, setError] = useState({
 
 const navigator = useNavigate()
 
+const {id} = useParams()
+
 function saveEmployee(e){
     e.preventDefault()
 
 
-    if(validateForm){
+    if(validateForm()){
 
       const employee = {firstName, lastName, email}
       console.log(employee)
@@ -68,12 +70,23 @@ function validateForm(){
   return valid;
 }
 
+function pageTitle(){
+
+  if(!id){
+      return <h2 className='text-center'>Add Employee</h2>
+
+  }else{
+    return <h2 className='text-center'>Update Employee</h2>
+
+  }
+}
+
   return (
     <div className='container'>
           <br /> <br />
         <div className='row'>
             <div className='card col-md-6 offset-md-3 offset-md-3'>
-                    <h2 className='text-center'>Add Employee</h2>
+                           {pageTitle()}
                  <div className='card-body pt-3'>
                         <form>
                             <div className='form-group mb-2'>
@@ -83,10 +96,10 @@ function validateForm(){
                                  placeholder='Enter Employee First Name'
                                  name='firstName'
                                  value={firstName}
-                                 className='form-control'
+                                 className={`form-control ${error.firstName ? "is-invalid" : ""}`}
                                  onChange={(e) => setFirstName(e.target.value)}
                                  />
-
+                                 {error.firstName && <div className='invalid-feedback'>{error.firstName}</div>}
                             </div>
 
                              <div className='form-group mb-2'>
@@ -96,9 +109,10 @@ function validateForm(){
                                  placeholder='Enter Employee Last Name'
                                  name='lastName'
                                  value={lastName}
-                                 className='form-control'
+                                 className={`form-control ${error.lastName ? "is-invalid" : ""}`}
                                  onChange={(e)=> setLastName(e.target.value)}
                                  />
+                                    {error.lastName && <div className='invalid-feedback'>{error.lastName}</div>}
                             </div>
 
                              <div className='form-group mb-2'>
@@ -108,13 +122,13 @@ function validateForm(){
                                  placeholder='Enter Employee Email'
                                  name='email'
                                  value={email}
-                                 className='form-control'
+                                 className={`form-control ${error.email ? "is-invalid" : ""}`}
                                  onChange={(e) => setEmail(e.target.value)}
                                  />
+                                 {error.email && <div className='invalid-feedback'>{error.email}</div>}
                             </div>
 
                             <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
-
                         </form>
 
                  </div>

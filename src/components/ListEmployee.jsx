@@ -9,7 +9,6 @@ const [employees, setEployees] = useState([])
 
 const navigator = useNavigate()
 
-
 useEffect(()=>{
         listEployees().then((response)=>{
             setEployees(response.data);
@@ -21,6 +20,12 @@ useEffect(()=>{
 function addNewEmployee(){
         navigator('/add-newEmployee')
 }
+
+function UpdateEmployee(id){
+    navigator(`/updateEmployee/${id}`)
+}
+
+
 
   return (
     <div className='container'>
@@ -36,6 +41,7 @@ function addNewEmployee(){
                         <th>Employee First Name</th>
                         <th>Employee Last Name</th>
                         <th>Employee Email ID</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,12 +52,13 @@ function addNewEmployee(){
                                         <td>{employee.firstName}</td>
                                         <td>{employee.lastName}</td>
                                         <td>{employee.email}</td>
-                                </tr>
+                                        <td>
+                                            <button className='btn btn-info' onClick={() => UpdateEmployee(employee.id)}>Update</button>
+                                        </td>
+                                 </tr>
                         )
-
                     }
                 </tbody>
-
             </table>
     </div>
   )
