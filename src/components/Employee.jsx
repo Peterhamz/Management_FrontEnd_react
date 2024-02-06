@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import { createEmployee } from '../services/EmployeeServices'
+import React, {useEffect, useState} from 'react'
+import { createEmployee, getEmployee, updateEmployeeApi } from '../services/EmployeeServices'
 import { useNavigate, useParams } from 'react-router-dom'
 
 
@@ -9,18 +9,31 @@ const [firstName, setFirstName] = useState('')
 const [lastName, setLastName] = useState('')
 const [email, setEmail] = useState('')
 
+
+const {id} = useParams()
+
 const [error, setError] = useState({
   firstName: "",
   lastName: "",
   email:  ""
 })
-
-
 const navigator = useNavigate()
 
-const {id} = useParams()
+useEffect(() =>{
 
-function saveEmployee(e){
+if(id){
+  getEmployee(id).then((response) =>{
+    setFirstName(response.data.firstName);
+    setLastName(response.data.lastName);
+    setEmail(response.data.email);
+  }).catch(error =>{
+    console.error(error)
+  })
+}
+
+},[id])
+
+function saveOrUpdateEmployee(e){
     e.preventDefault()
 
 
@@ -28,14 +41,25 @@ function saveEmployee(e){
 
       const employee = {firstName, lastName, email}
       console.log(employee)
-  
-      createEmployee(employee).then((response) =>{
-        console.log(response.data)
-          navigator('/employees')
-      })
 
-    }
+      if(id){
+        updateEmployeeApi(id,employee).then((response) => {
+          console.log(response.data)
+          navigator('/employees')
+        }).catch(error=>{
+          console.error(error)
+        })
+      }else{
+        createEmployee(employee).then((response) =>{
+          console.log(response.data)
+            navigator('/employees')
+        }).catch(error =>{
+          console.error(error)
+        })
+      }
+  
    
+    }
 }
 
 function validateForm(){
@@ -128,7 +152,7 @@ function pageTitle(){
                                  {error.email && <div className='invalid-feedback'>{error.email}</div>}
                             </div>
 
-                            <button className='btn btn-success' onClick={saveEmployee}>Submit</button>
+                           <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
                         </form>
 
                  </div>
